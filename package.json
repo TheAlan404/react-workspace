@@ -1,0 +1,32 @@
+{
+	"name": "@alan404/react-workspace",
+	"version": "0.0.2",
+	"author": "alan404",
+	"repository": "https://github.com/TheAlan404/react-workspace",
+	"description": "Infinitely pannable, accessible map-like workspace for React",
+	"main": "dist/src/index.js",
+	"types": "dist/src/index.d.ts",
+	"type": "module",
+	"files": [
+		"/dist"
+	],
+	"scripts": {
+		"build": "tsc",
+		"dev": "cd example && vite",
+		"test": "vitest"
+	},
+	"devDependencies": {
+		"@types/react": "^18.3.12",
+		"@types/react-dom": "^18.3.1",
+		"@vitejs/plugin-react-swc": "^3.7.1",
+		"react-dom": "^18.3.1",
+		"typescript": "^5.6.2",
+		"vite": "^5.4.10",
+		"vite-tsconfig-paths": "^5.0.1",
+		"vitest": "^2.1.1"
+	},
+	"dependencies": {
+		"@mantine/hooks": "^7.13.4",
+		"react": "^18.3.1"
+	}
+}
