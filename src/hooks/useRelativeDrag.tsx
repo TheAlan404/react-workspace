@@ -7,6 +7,8 @@ import { useGlobalTransform } from "./useGlobalTransform";
 export interface UseRelativeDragOptions {
     value: Position;
     onChange: (position: Position) => void;
+    onChangeStart?: () => void;
+    onChangeEnd?: () => void;
     scale?: number;
     disabled?: boolean;
 };
@@ -19,6 +21,8 @@ export interface UseRelativeDrag {
 export const useRelativeDrag = ({
     value,
     onChange,
+    onChangeStart,
+    onChangeEnd,
     scale,
     disabled,
 }: UseRelativeDragOptions): UseRelativeDrag => {
@@ -31,17 +35,18 @@ export const useRelativeDrag = ({
     useHotkeys([["Escape", () => setIsDragging(false)]]);
 
     useWindowEvent("mousemove", (e) => {
-        if (!isDragging) return;
+        if (!isDragging || disabled) return;
         if (!getMouseButtons(e).left) return setIsDragging(false);
         onInputMove({ x: e.clientX, y: e.clientY });
     });
 
     useWindowEvent("mouseup", (e) => {
         setIsDragging(false);
+        if(!disabled) onChangeEnd?.();
     });
 
     useWindowEvent("touchmove", (e) => {
-        if (!isDragging) return;
+        if (!isDragging || disabled) return;
         if (e.touches.length != 1) return;
         e.preventDefault();
         let touch = e.touches[0];
@@ -63,25 +68,33 @@ export const useRelativeDrag = ({
         props: {
             onMouseDown: (e: React.MouseEvent<HTMLElement>) => {
                 if (!getMouseButtons(e).left) return;
+                if (disabled) return;
                 e.stopPropagation();
                 e.preventDefault();
                 (document.activeElement as HTMLElement)?.blur();
+
                 setIsDragging(true);
                 setStart({ x: e.clientX, y: e.clientY });
                 setStartDragPosition(value);
+                onChangeStart?.();
             },
 
             onTouchStart: (e: React.TouchEvent<HTMLElement>) => {
                 if (e.touches.length != 1) return;
+                if (disabled) return;
                 e.stopPropagation();
-                setIsDragging(true);
-                setStartDragPosition(value);
                 let touch = e.touches[0];
+
+                setIsDragging(true);
                 setStart({ x: touch.clientX, y: touch.clientY });
+                setStartDragPosition(value);
+                if(!disabled) onChangeStart?.();
             },
 
             onTouchEnd: (e: React.TouchEvent<HTMLElement>) => {
+                if (disabled) return;
                 setIsDragging(false);
+                onChangeEnd?.();
             },
         },
     };
