@@ -86,33 +86,41 @@ export const WorkspaceView = ({
     };
 
     const noPropagation = (e: React.SyntheticEvent) => e.stopPropagation();
+    const noDefault = (e: React.SyntheticEvent) => e.preventDefault();
 
     return (
         <div
             {...props}
             onWheel={combineEvents([
+                noDefault,
+                noPropagation,
                 handleWheel,
                 props.onWheel,
             ])}
             onTouchMove={combineEvents([
+                noDefault,
+                noPropagation,
                 handleTouchMove,
                 props.onTouchMove,
             ])}
             onTouchStart={combineEvents([
+                noDefault,
+                noPropagation,
                 props.onTouchStart,
                 relativeDragProps.onTouchStart,
-                noPropagation
             ])}
             onTouchEnd={combineEvents([
+                noDefault,
+                noPropagation,
                 props.onTouchEnd,
                 relativeDragProps.onTouchEnd,
                 handleTouchEnd,
-                noPropagation,
             ])}
             onMouseDown={combineEvents([
+                noDefault,
+                noPropagation,
                 props.onMouseDown,
                 relativeDragProps.onMouseDown,
-                noPropagation,
             ])}
             style={{
                 cursor: withCursor !== false ? (isPanning ? "grabbing" : "all-scroll") : undefined,
