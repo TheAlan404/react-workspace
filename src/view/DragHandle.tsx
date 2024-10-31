@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import { Position } from "../types";
 import { useRelativeDrag, useTransform } from "../hooks";
-import { combineEvents } from "../utils";
 
 export type DragHandleProps = {
     position?: Position;
@@ -9,6 +7,7 @@ export type DragHandleProps = {
     onDragStart?: () => void;
     onDragEnd?: () => void;
     withCursor?: boolean;
+    disabled?: boolean;
 } & Omit<JSX.IntrinsicElements["div"], "onDragStart" | "onDragEnd">;
 
 export const DragHandle = ({
@@ -19,37 +18,23 @@ export const DragHandle = ({
     setPosition: _setPosition,
     onDragStart,
     onDragEnd,
+    disabled,
     ...props
 }: DragHandleProps) => {
     const { position, setPosition } = useTransform();
 
-    const { isDragging, props: relativeDragProps } = useRelativeDrag({
+    const { isDragging, ref } = useRelativeDrag<HTMLDivElement>({
         value: _position || position,
         onChange: _setPosition || setPosition,
+        onChangeStart: onDragStart,
+        onChangeEnd: onDragEnd,
+        disabled,
     });
-
-    useEffect(() => {
-        if(isDragging) onDragStart?.();
-        else onDragEnd?.();
-    }, [isDragging]);
 
     return (
         <div
             {...props}
-
-            onMouseDown={combineEvents([
-                relativeDragProps.onMouseDown,
-                props.onMouseDown,
-            ])}
-            onTouchStart={combineEvents([
-                relativeDragProps.onTouchStart,
-                props.onTouchStart,
-            ])}
-            onTouchEnd={combineEvents([
-                relativeDragProps.onTouchEnd,
-                props.onTouchEnd,
-            ])}
-            
+            ref={ref}            
             style={{
                 cursor: withCursor !== false ? (isDragging ? "grabbing" : "grab") : undefined,
                 ...style,

@@ -12,27 +12,18 @@ export const WorkspaceView = ({
     withCursor,
     ...props
 }: WorkspaceViewProps) => {
-    const { position, setPosition, scale, setScale } = useContext(GlobalTransform);
-    const [lastPinchDistance, setLastPinchDistance] = useState<number | null>(null);
+    const { position, scale } = useContext(GlobalTransform);
     const workspaceRef = useRef(null);
 
     const {
         isPanning,
-        props: panningProps
-    } = usePanning();
-
-    const overrideProps = {};
-    for(let [k, f] of Object.entries(panningProps))
-        overrideProps[k] = combineEvents([
-            f,
-            props[k],
-        ]);
+        ref,
+    } = usePanning<HTMLDivElement>();
 
     return (
         <div
             {...props}
-            {...overrideProps}
-
+            ref={ref}
             style={{
                 cursor: withCursor !== false ? (isPanning ? "grabbing" : "all-scroll") : undefined,
                 overflow: "hidden",
