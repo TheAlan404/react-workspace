@@ -89,9 +89,15 @@ export const WorkspaceView = ({
 
     return (
         <div
-            onWheel={handleWheel}
-            onTouchMove={handleTouchMove}
             {...props}
+            onWheel={combineEvents([
+                handleWheel,
+                props.onWheel,
+            ])}
+            onTouchMove={combineEvents([
+                handleTouchMove,
+                props.onTouchMove,
+            ])}
             onTouchStart={combineEvents([
                 props.onTouchStart,
                 relativeDragProps.onTouchStart,
