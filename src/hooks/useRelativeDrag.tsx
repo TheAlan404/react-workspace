@@ -48,7 +48,6 @@ export const useRelativeDrag = ({
     useWindowEvent("touchmove", (e) => {
         if (!isDragging || disabled) return;
         if (e.touches.length != 1) return;
-        e.preventDefault();
         let touch = e.touches[0];
         onInputMove({ x: touch.clientX, y: touch.clientY });
     });

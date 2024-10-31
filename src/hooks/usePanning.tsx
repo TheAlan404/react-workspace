@@ -94,17 +94,14 @@ export const usePanning = () => {
             ]),
             
             onTouchStart: combineEvents([
-                noDefault,
                 noPropagation,
                 relativeDragProps.onTouchStart,
             ]),
             onTouchMove: combineEvents([
-                noDefault,
                 noPropagation,
                 handleTouchMove,
             ]),
             onTouchEnd: combineEvents([
-                noDefault,
                 noPropagation,
                 handleTouchEnd,
                 relativeDragProps.onTouchEnd,
