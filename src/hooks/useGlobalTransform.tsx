@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import { GlobalTransform, IGlobalTransform } from "../core";
-import { Position } from "../types";
+import { Position, Vec2, vec2client, vec2div, vec2sub } from "../types";
 
 export interface IGlobalTransformUtils {
     center: () => void;
     reset: () => void;
     moveBy: (pos: Partial<Position>) => void;
+    getAbsolutePosition: (screenRelative: Vec2) => Position;
 }
 
 export const useGlobalTransform = (): IGlobalTransform & IGlobalTransformUtils => {
@@ -31,10 +32,14 @@ export const useGlobalTransform = (): IGlobalTransform & IGlobalTransformUtils =
         ctx.setScale(ctx.initialScale || 0.7);
     };
 
+    const getAbsolutePosition = (vec: Vec2) =>
+        vec2div(vec2sub(vec, ctx.position), ctx.scale);
+
     return {
         ...ctx,
         center,
         reset,
         moveBy,
+        getAbsolutePosition,
     };
 };

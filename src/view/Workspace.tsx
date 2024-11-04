@@ -1,22 +1,37 @@
-import { PropsWithChildren, ReactNode } from "react";
-import { GlobalTransformProvider } from "../core";
+import { forwardRef, PropsWithChildren, ReactNode, useImperativeHandle, useRef } from "react";
 import { BackgroundGrid } from "./BackgroundGrid";
 import { WorkspaceView } from "./WorkspaceView";
+import { usePanning } from "../hooks";
+import { useScaling } from "../hooks/useScaling";
 
 export interface WorkspaceProps extends PropsWithChildren {
     background?: ReactNode;
+    withCursor?: boolean;
 }
 
-export const Workspace = ({
+export const Workspace = forwardRef<HTMLDivElement, WorkspaceProps>(({
     background,
     children,
-}: WorkspaceProps) => {
+    withCursor = true,
+}, fwd) => {
+    const ref = useRef<HTMLDivElement | null>(null);
+
+    useImperativeHandle(fwd, () => ref.current!, []);
+
+    const isPanning = usePanning(ref);
+    useScaling(ref);
+
     return (
-        <GlobalTransformProvider>
+        <div>
             {background ?? <BackgroundGrid />}
-            <WorkspaceView>
+            <WorkspaceView
+                ref={ref}
+                style={{
+                    cursor: withCursor ? (isPanning ? "grabbing" : "all-scroll") : undefined,
+                }}
+            >
                 {children}
             </WorkspaceView>
-        </GlobalTransformProvider>
+        </div>
     )
-};
+});

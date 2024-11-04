@@ -1,5 +1,5 @@
 import { PropsWithChildren, useState } from "react";
-import { Position } from "../";
+import { Position, vec2round } from "../";
 import { GlobalTransform, IGlobalTransform } from "./GlobalTransformContext";
 import { useUncontrolled } from "@mantine/hooks";
 
@@ -13,6 +13,8 @@ export const GlobalTransformProvider = ({
     scale: _scale,
     initialScale,
     setScale: _setScale,
+    maxScale = 2,
+    minScale = 0.2,
 }: GlobalTransformProviderProps) => {
     const [scale, setScale] = useUncontrolled<number>({
         value: _scale,
@@ -38,7 +40,9 @@ export const GlobalTransformProvider = ({
             setScale,
             position,
             initialPosition,
-            setPosition,
+            setPosition: (pos) => setPosition(vec2round(pos)),
+            minScale,
+            maxScale,
         }}>
             {children}
         </GlobalTransform.Provider>

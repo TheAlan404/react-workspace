@@ -1,6 +1,6 @@
 {
 	"name": "@alan404/react-workspace",
-	"version": "0.0.8",
+	"version": "0.1.0",
 	"author": "alan404",
 	"repository": "https://github.com/TheAlan404/react-workspace",
 	"description": "Infinitely pannable, accessible map-like workspace for React",

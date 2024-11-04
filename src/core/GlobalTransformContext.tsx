@@ -8,6 +8,8 @@ export interface IGlobalTransform {
     scale: number;
     initialScale?: number;
     setScale: (scale: number) => void;
+    minScale?: number;
+    maxScale?: number;
 }
 
 export const GlobalTransform = createContext<IGlobalTransform>({

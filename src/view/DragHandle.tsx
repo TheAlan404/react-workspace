@@ -1,5 +1,6 @@
 import { Position } from "../types";
 import { useRelativeDrag, useTransform } from "../hooks";
+import { forwardRef, useImperativeHandle, useRef } from "react";
 
 export type DragHandleProps = {
     position?: Position;
@@ -10,7 +11,7 @@ export type DragHandleProps = {
     disabled?: boolean;
 } & Omit<JSX.IntrinsicElements["div"], "onDragStart" | "onDragEnd">;
 
-export const DragHandle = ({
+export const DragHandle = forwardRef<HTMLDivElement, DragHandleProps>(({
     children,
     style,
     withCursor,
@@ -20,14 +21,17 @@ export const DragHandle = ({
     onDragEnd,
     disabled,
     ...props
-}: DragHandleProps) => {
+}, fwd) => {
     const { position, setPosition } = useTransform();
+    const ref = useRef<HTMLDivElement | null>(null);
 
-    const { isDragging, ref } = useRelativeDrag<HTMLDivElement>({
-        value: _position || position,
-        onChange: _setPosition || setPosition,
-        onChangeStart: onDragStart,
-        onChangeEnd: onDragEnd,
+    useImperativeHandle(fwd, () => ref.current, []);
+
+    const { isDragging } = useRelativeDrag(ref, {
+        position: _position || position,
+        onDrag: _setPosition || setPosition,
+        onDragStart: onDragStart,
+        onDragEnd: onDragEnd,
         disabled,
     });
 
@@ -43,4 +47,4 @@ export const DragHandle = ({
             {children}
         </div>
     )
-};
+});

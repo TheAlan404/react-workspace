@@ -7,11 +7,8 @@ import { useGlobalTransform } from "./useGlobalTransform";
  * @returns The position of the mouse in the viewport
  */
 export const useMousePosition = (): Position => {
-    const { position, scale } = useGlobalTransform();
+    const { getAbsolutePosition  } = useGlobalTransform();
     const mouse = useMouse();
 
-    return {
-        x: Math.round((mouse.x - position.x) / scale),
-        y: Math.round((mouse.y - position.y) / scale),
-    };
+    return getAbsolutePosition(mouse);
 };
